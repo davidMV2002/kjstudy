@@ -1,31 +1,41 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kjstudy/MyApp.dart';
-
-import 'package:kjstudy/main.dart';
+import 'package:kjstudy/views/home_view.dart';
+import 'package:kjstudy/views/kanji_list_view.dart';
+import 'package:kjstudy/my_app.dart';
+import 'package:kjstudy/views/test_view.dart';
+import 'package:kjstudy/views/vocabulario_list_view.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(Myapp());
+  testWidgets('La aplicación inicia en el menú principal', (tester) async {
+    await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.byType(HomeView), findsOneWidget);
+    expect(find.text('KJ STUDY'), findsOneWidget);
+    expect(find.byType(TextButton), findsNWidgets(3));
+    expect(tester.takeException(), isNull);
   });
+
+  for (final destination in <String, Type>{
+    'Lista de Kanjis': KanjiListView,
+    'Lista de Vocabulario': VocabularioListView,
+    'Test': TestView,
+  }.entries) {
+    testWidgets('Abre ${destination.key} y vuelve al menú', (tester) async {
+      await tester.pumpWidget(const MyApp());
+      await tester.tap(find.text(destination.key));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(destination.value), findsOneWidget);
+      expect(find.byType(HomeView), findsNothing);
+      expect(tester.takeException(), isNull);
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      expect(find.byType(HomeView), findsOneWidget);
+      expect(find.byType(destination.value), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+  }
 }
