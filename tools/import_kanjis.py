@@ -9,13 +9,19 @@ import os
 import shutil
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 DEPS = Path(__file__).resolve().parents[1] / "tmp" / "firestore-import-deps"
 sys.path.insert(0, str(DEPS))
 
 from google.cloud import firestore
 from google.oauth2 import service_account
+
+
+# 12 de octubre de 2026 a medianoche en Madrid: fecha inicial solicitada.
+MODIFICATION_DATE = datetime(2026, 10, 12, 0, 0, 0, tzinfo=ZoneInfo("Europe/Madrid"))
 
 
 CHAPTERS = [
@@ -312,7 +318,9 @@ def main():
         documents = list(db.collection("kanjis").stream())
         sample = db.collection("kanjis").document("日").get().to_dict()
         print(f"Verificados {len(documents)} documentos en kanjis: {', '.join(doc.id for doc in documents[:5])}")
+        print(f"Campos de 日: {', '.join(sorted(sample))}")
         print(f"Muestra 日: {sample['significado']} | on={sample['lecturasOn']} | kun={sample['lecturasKun']} | {sample['nivelJLPT']}")
+        print(f"Fecha de modificación de 日: {sample['fechamodificacion'].isoformat()}")
         return
 
     node = shutil.which("node") or r"C:\Users\david\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe"
@@ -336,19 +344,14 @@ def main():
         return
 
     records = []
-    for order, (character, source) in enumerate(zip(kanji, source_records), start=1):
+    for character, source in zip(kanji, source_records):
         records.append({
             "caracter": character,
             "significado": meanings[character],
             "lecturasOn": source["on_readings"],
             "lecturasKun": source["kun_readings"],
-            # El JLPT no publica una tabla oficial carácter por carácter;
-            # es la clasificación habitual del diccionario de origen.
             "nivelJLPT": f"N{source['jlpt']}" if source["jlpt"] else None,
-            "nivelJLPTEsAproximado": True,
-            "ordenLibro": order,
-            "leccionLibro": next(i + 1 for i, lesson in enumerate(CHAPTERS) if character in lesson),
-            "fuente": "Basic Kanji Book Vol. 1",
+            "fechamodificacion": MODIFICATION_DATE,
         })
 
     for start in range(0, len(records), 500):

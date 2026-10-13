@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../app_routes.dart';
+import '../AppRoutes.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
