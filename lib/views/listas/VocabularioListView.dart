@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../DataHolder.dart';
-import '../objects/Vocabulario.dart';
-import '../services/VocabularioRepository.dart';
+import '../../DataHolder.dart';
+import '../../objects/Vocabulario.dart';
+import '../../services/VocabularioRepository.dart';
 
 class VocabularioListView extends StatefulWidget {
   const VocabularioListView({super.key});

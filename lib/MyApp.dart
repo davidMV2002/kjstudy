@@ -4,9 +4,9 @@ import 'package:kjstudy/views/VocabularioDetailView.dart';
 
 import 'AppRoutes.dart';
 import 'views/HomeView.dart';
-import 'views/KanjiListView.dart';
+import 'views/listas/KanjiListView.dart';
 import 'views/TestView.dart';
-import 'views/VocabularioListView.dart';
+import 'views/listas/VocabularioListView.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

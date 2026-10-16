@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../DataHolder.dart';
-import '../objects/Kanji.dart';
-import '../services/KanjiRepository.dart';
+import '../../DataHolder.dart';
+import '../../objects/Kanji.dart';
+import '../../services/KanjiRepository.dart';
 
 class KanjiListView extends StatefulWidget {
   const KanjiListView({super.key});

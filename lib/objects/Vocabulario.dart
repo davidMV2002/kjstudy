@@ -2,6 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Representa un documento de la colección `vocabulario` en Firestore.
 class Vocabulario {
+  final String? id;
+  final List<String> kanjiIds;
+  final String lectura;
+  final String palabra;
+  final String significado;
+  final DateTime fechaModificacion;
+
   const Vocabulario({
     this.id,
     this.kanjiIds = const [],
@@ -10,13 +17,6 @@ class Vocabulario {
     required this.significado,
     required this.fechaModificacion,
   });
-
-  final String? id;
-  final List<String> kanjiIds;
-  final String lectura;
-  final String palabra;
-  final String significado;
-  final DateTime fechaModificacion;
 
   factory Vocabulario.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> document,

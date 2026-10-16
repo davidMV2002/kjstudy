@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kjstudy/views/HomeView.dart';
-import 'package:kjstudy/views/KanjiListView.dart';
+import 'package:kjstudy/views/listas/KanjiListView.dart';
 import 'package:kjstudy/MyApp.dart';
 import 'package:kjstudy/views/TestView.dart';
-import 'package:kjstudy/views/VocabularioListView.dart';
+import 'package:kjstudy/views/listas/VocabularioListView.dart';
 
 void main() {
   testWidgets('La aplicación inicia en el menú principal', (tester) async {

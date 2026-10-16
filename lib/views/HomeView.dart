@@ -15,17 +15,22 @@ class HomeView extends StatelessWidget {
       body: Column(
         children: [
           TextButton(
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.kanjis),
-            child: const Text('Lista de Kanjis'),
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.test),
+            child: const Text('Test'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.kanjis),  // Cambiar la ruta
+            child: const Text('Listas'),
           ),
           TextButton(
             onPressed: () =>
-                Navigator.pushNamed(context, AppRoutes.vocabulario),
-            child: const Text('Lista de Vocabulario'),
+                Navigator.pushNamed(context, AppRoutes.vocabulario),  // Cambiar la ruta
+            child: const Text('Personalizadas'),
           ),
           TextButton(
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.test),
-            child: const Text('Test'),
+            onPressed: () =>
+                Navigator.pushNamed(context, AppRoutes.vocabulario),  // Cambiar la ruta
+            child: const Text('Mis Kanjis'),
           ),
         ],
       ),
