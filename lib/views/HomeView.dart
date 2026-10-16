@@ -1,12 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../AppRoutes.dart';
+import '../DataHolder.dart';
+import '../insLib/BotBarStyle.dart';
 
 class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+  late BuildContext miContext;
+  Dataholder dh = Dataholder.instance;
+
+  HomeView({super.key});
+
+  void cerrarSesion(){
+    FirebaseAuth.instance.signOut();
+    Navigator.popAndPushNamed(miContext, "/LoginView");
+  }
 
   @override
   Widget build(BuildContext context) {
+    miContext = context;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('KJ STUDY', textAlign: TextAlign.center),
@@ -19,20 +32,29 @@ class HomeView extends StatelessWidget {
             child: const Text('Test'),
           ),
           TextButton(
-            onPressed: () => Navigator.pushNamed(context, AppRoutes.kanjis),  // Cambiar la ruta
-            child: const Text('Listas'),
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.lecciones),
+            child: const Text('Lecciones'),
+          ),
+          TextButton(
+            onPressed: () =>
+                Navigator.pushNamed(context, AppRoutes.vocabulario),
+            child: const Text('Vocabulario'),
           ),
           TextButton(
             onPressed: () =>
                 Navigator.pushNamed(context, AppRoutes.vocabulario),  // Cambiar la ruta
-            child: const Text('Personalizadas'),
+            child: const Text('Listas Personalizadas'),
           ),
           TextButton(
             onPressed: () =>
                 Navigator.pushNamed(context, AppRoutes.vocabulario),  // Cambiar la ruta
             child: const Text('Mis Kanjis'),
           ),
+          TextButton(onPressed: cerrarSesion, child: Text("Cerrar Sesion")),
         ],
+      ),
+      bottomNavigationBar: Botbarstyle(
+        iBarIndex: dh.iBarIndex,
       ),
     );
   }

@@ -9,6 +9,7 @@ class Kanji {
   final List<String> lecturasOn;
   final String nivelJLPT;
   final String significado;
+  final int? leccion;
   final DateTime fechaModificacion;
 
   const Kanji({
@@ -18,6 +19,7 @@ class Kanji {
     required this.lecturasOn,
     required this.nivelJLPT,
     required this.significado,
+    this.leccion,
     required this.fechaModificacion,
   });
 
@@ -34,6 +36,7 @@ class Kanji {
       lecturasOn: List<String>.from(data['lecturasOn'] ?? []),
       nivelJLPT: data['nivelJLPT'] as String? ?? '',
       significado: data['significado'] as String? ?? '',
+      leccion: (data['leccion'] as num?)?.toInt(),
       fechaModificacion:
           (data['fechamodificacion'] as Timestamp?)?.toDate() ??
               DateTime.fromMillisecondsSinceEpoch(0),
@@ -47,6 +50,7 @@ class Kanji {
       'lecturasOn': lecturasOn,
       'nivelJLPT': nivelJLPT,
       'significado': significado,
+      'leccion': leccion,
       'fechamodificacion': Timestamp.fromDate(fechaModificacion),
     };
   }

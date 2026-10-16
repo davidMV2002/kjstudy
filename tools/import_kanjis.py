@@ -344,9 +344,11 @@ def main():
         return
 
     records = []
+    lessons = {character: number for number, chapter in enumerate(CHAPTERS, 1) for character in chapter}
     for character, source in zip(kanji, source_records):
         records.append({
             "caracter": character,
+            "leccion": lessons[character],
             "significado": meanings[character],
             "lecturasOn": source["on_readings"],
             "lecturasKun": source["kun_readings"],

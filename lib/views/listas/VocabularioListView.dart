@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../DataHolder.dart';
+import '../../insLib/BotBarStyle.dart';
 import '../../objects/Vocabulario.dart';
 import '../../services/VocabularioRepository.dart';
 
@@ -13,6 +14,7 @@ class VocabularioListView extends StatefulWidget {
 
 class _VocabularioListViewState extends State<VocabularioListView> {
   late BuildContext miContext;
+  Dataholder dh = Dataholder.instance;
 
   final VocabularioRepository _vocabularioRepository =
       VocabularioRepository();
@@ -81,6 +83,9 @@ class _VocabularioListViewState extends State<VocabularioListView> {
             },
           );
         },
+      ),
+      bottomNavigationBar: Botbarstyle(
+        iBarIndex: dh.iBarIndex,
       ),
     );
   }

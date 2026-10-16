@@ -4,6 +4,7 @@ import '../objects/Kanji.dart';
 
 /// Encargado de leer y guardar kanjis en Firestore.
 class KanjiRepository {
+
   KanjiRepository({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
@@ -24,6 +25,15 @@ class KanjiRepository {
           (snapshot) =>
               snapshot.docs.map((document) => document.data()).toList(),
         );
+  }
+
+  /// Escucha únicamente los kanjis de la lección seleccionada.
+  Stream<List<Kanji>> watchByLeccion(int leccion) {
+    return _kanjis
+        .where('leccion', isEqualTo: leccion)
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((document) => document.data()).toList());
   }
 
   /// Obtiene un kanji concreto a partir del ID guardado en una palabra.

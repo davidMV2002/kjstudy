@@ -1,4 +1,5 @@
 abstract final class AppRoutes {
+  static const lecciones = '/LeccionesView';
   static const kanjis = '/KanjiListView';
   static const vocabulario = '/VocabularioListView';
   static const test = '/TestView';

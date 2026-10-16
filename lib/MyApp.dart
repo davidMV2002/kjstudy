@@ -9,6 +9,7 @@ import 'package:kjstudy/views/credenciales/RegisterView.dart';
 import 'AppRoutes.dart';
 import 'views/HomeView.dart';
 import 'views/listas/KanjiListView.dart';
+import 'views/listas/LeccionesView.dart';
 import 'views/TestView.dart';
 import 'views/listas/VocabularioListView.dart';
 
@@ -20,10 +21,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: "KJ STUDY",
       routes: {
+        AppRoutes.lecciones: (context) => const Leccionesview(),
         AppRoutes.kanjis: (context) => const KanjiListView(),
         AppRoutes.vocabulario: (context) => const VocabularioListView(),
-        AppRoutes.test: (context) => const TestView(),
-        AppRoutes.home: (context) => const HomeView(),
+        AppRoutes.test: (context) => TestView(),
+        AppRoutes.home: (context) => HomeView(),
         AppRoutes.kanjiDetail: (context) => Kanjidetailview(),
         AppRoutes.vocabularioDetail: (context) => Vocabulariodetailview(),
         AppRoutes.login: (context) => Loginview(),

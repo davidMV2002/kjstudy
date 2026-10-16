@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:kjstudy/DataHolder.dart';
 
 import '../AppRoutes.dart';
+import '../insLib/BotBarStyle.dart';
 import '../services/KanjiRepository.dart';
 
 class Vocabulariodetailview extends StatelessWidget{
@@ -44,6 +45,9 @@ class Vocabulariodetailview extends StatelessWidget{
             ],
           ),
         ],
+      ),
+      bottomNavigationBar: Botbarstyle(
+        iBarIndex: dh.iBarIndex,
       ),
     );
   }

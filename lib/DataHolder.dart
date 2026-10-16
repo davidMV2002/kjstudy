@@ -10,4 +10,6 @@ class Dataholder {
   late Kanji kanji;
   late Vocabulario vocabulario;
   late Perfil perfilUsuario;
+  late int leccion;
+  int iBarIndex = 0;
 }
