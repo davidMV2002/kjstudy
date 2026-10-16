@@ -3,12 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// Representa un documento de la colección `kanjis` en Firestore.
 class Perfil {
 
-  final String? id;
+  final String? uid;
   final String nombre;
   final String nivel;
 
   const Perfil({
-    this.id,
+    this.uid,
     required this.nombre,
     required this.nivel,
   });
@@ -20,7 +20,7 @@ class Perfil {
     final data = document.data() ?? {};
 
     return Perfil(
-      id: document.id,
+      uid: document.id,
       nombre: data['nombre'] as String? ?? '',
       nivel: data['nivel'] as String? ?? '',
     );

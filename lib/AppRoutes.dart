@@ -5,4 +5,8 @@ abstract final class AppRoutes {
   static const home = '/HomeView';
   static const kanjiDetail = '/KanjiDetailView';
   static const vocabularioDetail = '/VocabularioDetailView';
+  static const login = '/LoginView';
+  static const register = '/RegisterView';
+  static const onboarding = '/OnBoardinView';
+  static const crearperfil = '/CrearPerfilView';
 }

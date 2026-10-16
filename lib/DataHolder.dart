@@ -1,4 +1,5 @@
 import 'objects/Kanji.dart';
+import 'objects/Perfil.dart';
 import 'objects/Vocabulario.dart';
 
 class Dataholder {
@@ -8,4 +9,5 @@ class Dataholder {
 
   late Kanji kanji;
   late Vocabulario vocabulario;
+  late Perfil perfilUsuario;
 }
