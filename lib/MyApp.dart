@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kjstudy/views/BusquedaView.dart';
 import 'package:kjstudy/views/KanjiDetailView.dart';
 import 'package:kjstudy/views/OnBoardingView.dart';
 import 'package:kjstudy/views/VocabularioDetailView.dart';
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.register: (context) => Registerview(),
         AppRoutes.onboarding: (context) => Onboardingview(),
         AppRoutes.crearperfil: (context) => Crearperfilview(),
+        AppRoutes.busqueda: (context) => Busquedaview(),
       },
       home: const Onboardingview(),
     );

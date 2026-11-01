@@ -10,4 +10,5 @@ abstract final class AppRoutes {
   static const register = '/RegisterView';
   static const onboarding = '/OnBoardinView';
   static const crearperfil = '/CrearPerfilView';
+  static const busqueda = '/BusquedaView';
 }

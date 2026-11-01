@@ -9,7 +9,8 @@ class Kanjidetailview extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    dh.leccion = dh.kanji.leccion!;
+    // Los kanjis comunitarios pueden no pertenecer a una lección.
+    final leccion = dh.kanji.leccion;
 
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +24,7 @@ class Kanjidetailview extends StatelessWidget{
           Text("Lecturas kunyomi: " + dh.kanji.lecturasKun.toString()),
           Text("Lecturas onyomi: " + dh.kanji.lecturasOn.toString()),
           Text(dh.kanji.nivelJLPT),
-          Text(dh.leccion != null ? "Leccion: " + dh.leccion.toString() : ""),
+          if (leccion != null) Text("Lección: $leccion"),
         ],
       ),
       bottomNavigationBar: Botbarstyle(

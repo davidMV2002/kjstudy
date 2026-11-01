@@ -1,53 +1,40 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../AppRoutes.dart';
+import '../DataHolder.dart';
 
-class Botbarstyle extends StatefulWidget{
-  int iBarIndex = 0;
+class Botbarstyle extends StatelessWidget{
+  final int iBarIndex;
 
-  Botbarstyle({required this.iBarIndex});
+  const Botbarstyle({super.key, required this.iBarIndex});
 
-  @override
-  State<Botbarstyle> createState() => _BotbarstyleState();
-}
-
-class _BotbarstyleState extends State<Botbarstyle>{
-  late BuildContext miContext;
-
-  @override
-  void initState() {
-
-    super.initState();
-  }
-
-  void seleccionNavegador(int index){
+  void seleccionNavegador(BuildContext context, int index){
     switch(index){
       case 0: {
-        Navigator.popAndPushNamed(context, "/HomeView");
+        // La nueva pantalla leerá el índice actualizado del DataHolder.
+        Dataholder.instance.iBarIndex = index;
+        Navigator.popAndPushNamed(context, AppRoutes.home);
       }
 
       case 1:{
-        print("PROXIMAMENTE");
-        //Navigator.popAndPushNamed(context, "/BusquedaView");
+        Dataholder.instance.iBarIndex = index;
+        Navigator.popAndPushNamed(context, AppRoutes.busqueda);
       }
 
       case 2:{
-        print("PROXIMAMENTE");
+        debugPrint("PROXIMAMENTE");
+        //Dataholder.instance.iBarIndex = index;
         //Navigator.popAndPushNamed(context, "/XXX");
       }
     }
-    setState(() {
-      widget.iBarIndex = index;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    miContext=context;
 
     return NavigationBar(
-      onDestinationSelected: seleccionNavegador,
+      onDestinationSelected: (index) => seleccionNavegador(context, index),
       indicatorColor: Colors.redAccent,
-      selectedIndex: widget.iBarIndex,
+      selectedIndex: iBarIndex,
       destinations: [
         NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
         NavigationDestination(icon: Icon(Icons.search_rounded), label: 'Buscar'),
