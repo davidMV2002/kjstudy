@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../admin/FirebaseAdmin.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ class Crearperfilview extends StatelessWidget {
   late BuildContext miContext;
   TextEditingController nivelController = TextEditingController();
   TextEditingController nombreController = TextEditingController();
-  FirebaseFirestore db = FirebaseFirestore.instance;
+  final Firebaseadmin admin = Firebaseadmin();
 
   void funConfirmar() async {
     final nombre = nombreController.text.trim();
@@ -26,7 +26,7 @@ class Crearperfilview extends StatelessWidget {
     }
 
 
-    final perfiles = db.collection("perfil");
+    final perfiles = admin.perfiles;
     final perfil = new Perfil(
       uid: FirebaseAuth.instance.currentUser!.uid,
       nombre: nombre,
@@ -35,7 +35,7 @@ class Crearperfilview extends StatelessWidget {
 
 
     try {
-      await perfiles.doc(perfil.uid).set(perfil.toFirestore());
+      await perfiles.doc(perfil.uid).set(perfil);
       Dataholder.instance.perfilUsuario = perfil;
       if (!miContext.mounted) return;
       Navigator.popAndPushNamed(miContext, AppRoutes.onboarding);

@@ -3,7 +3,7 @@ import '../../DataHolder.dart';
 import '../../AppRoutes.dart';
 import '../../insLib/BotBarStyle.dart';
 import '../../objects/Kanji.dart';
-import '../../services/KanjiRepository.dart';
+import '../../admin/FirebaseAdmin.dart';
 
 class Leccionesview extends StatefulWidget{
   const Leccionesview({super.key});
@@ -13,8 +13,8 @@ class Leccionesview extends StatefulWidget{
 }
 
 class _LeccionesState extends State<Leccionesview> {
-  // Conserva el stream para no volver a suscribirse en cada build.
-  late final Stream<List<Kanji>> _kanjis = KanjiRepository().watchAll();
+  // Conserva la consulta para no repetirla en cada build.
+  late final Future<List<Kanji>> _kanjis = Firebaseadmin().verKanjis();
   final Dataholder dh = Dataholder.instance;
 
 
@@ -29,8 +29,8 @@ class _LeccionesState extends State<Leccionesview> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Lecciones')),
-      body: StreamBuilder<List<Kanji>>(
-        stream: _kanjis,
+      body: FutureBuilder<List<Kanji>>(
+        future: _kanjis,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(

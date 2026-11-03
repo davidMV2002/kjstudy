@@ -4,7 +4,7 @@ import '../../DataHolder.dart';
 import '../../AppRoutes.dart';
 import '../../insLib/BotBarStyle.dart';
 import '../../objects/Kanji.dart';
-import '../../services/KanjiRepository.dart';
+import '../../admin/FirebaseAdmin.dart';
 
 class KanjiListView extends StatefulWidget {
   const KanjiListView({super.key});
@@ -14,13 +14,12 @@ class KanjiListView extends StatefulWidget {
 }
 
 class _KanjiListViewState extends State<KanjiListView> {
-  final KanjiRepository _kanjiRepository = KanjiRepository();
+  final Firebaseadmin _admin = Firebaseadmin();
   late BuildContext miContext;
   final Dataholder dh = Dataholder.instance;
   // Conserva la lección con la que se abrió esta pantalla.
   late final int _leccion = dh.leccion;
-  late final Stream<List<Kanji>> _kanjis =
-      _kanjiRepository.watchByLeccion(_leccion);
+  late final Future<List<Kanji>> _kanjis = _admin.verKanjisPorLeccion(_leccion);
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +31,8 @@ class _KanjiListViewState extends State<KanjiListView> {
           'Lección $_leccion',
         ),
       ),
-      body: StreamBuilder<List<Kanji>>(
-        stream: _kanjis,
+      body: FutureBuilder<List<Kanji>>(
+        future: _kanjis,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(
@@ -78,7 +77,7 @@ class _KanjiListViewState extends State<KanjiListView> {
                       child: InkWell(
                         // Navegar a los detalles del Kanji
                         onTap: () {
-                          Dataholder.instance.kanji = kanji;
+                          dh.kanji = kanji;
                           Navigator.pushNamed(miContext, AppRoutes.kanjiDetail);
                         },
                         child: Padding(

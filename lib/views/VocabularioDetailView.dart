@@ -4,14 +4,14 @@ import 'package:kjstudy/DataHolder.dart';
 
 import '../AppRoutes.dart';
 import '../insLib/BotBarStyle.dart';
-import '../services/KanjiRepository.dart';
+import '../admin/FirebaseAdmin.dart';
 
 class Vocabulariodetailview extends StatelessWidget{
   late BuildContext miContext;
   Dataholder dh = Dataholder.instance;
 
   Future<void> funClickKanji(String kanjiId) async {
-    final kanji = await KanjiRepository().getById(kanjiId);
+    final kanji = await Firebaseadmin().descargarKanji(kanjiId);
 
     if (kanji == null) {
       return;

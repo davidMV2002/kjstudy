@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../DataHolder.dart';
 import '../../insLib/BotBarStyle.dart';
 import '../../objects/Vocabulario.dart';
-import '../../services/VocabularioRepository.dart';
+import '../../admin/FirebaseAdmin.dart';
 
 class VocabularioListView extends StatefulWidget {
   const VocabularioListView({super.key});
@@ -16,8 +16,7 @@ class _VocabularioListViewState extends State<VocabularioListView> {
   late BuildContext miContext;
   Dataholder dh = Dataholder.instance;
 
-  final VocabularioRepository _vocabularioRepository =
-      VocabularioRepository();
+  late final Future<List<Vocabulario>> _vocabulario = Firebaseadmin().verVocabulario();
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +24,8 @@ class _VocabularioListViewState extends State<VocabularioListView> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Lista de vocabulario')),
-      body: StreamBuilder<List<Vocabulario>>(
-        stream: _vocabularioRepository.watchAll(),
+      body: FutureBuilder<List<Vocabulario>>(
+        future: _vocabulario,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Center(

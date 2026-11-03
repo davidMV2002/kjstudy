@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../admin/FirebaseAdmin.dart';
 import '../AppRoutes.dart';
 import '../DataHolder.dart';
 import '../insLib/BotBarStyle.dart';
@@ -18,23 +18,19 @@ class _BusquedaviewState extends State<Busquedaview> {
   final dh = Dataholder.instance;
   String _busqueda = '';
 
-  // Cada colección se escucha en tiempo real y se convierte a su modelo.
-  // Los kanjis compartidos se interpretan con los mismos campos que los kanjis.
-  late final Stream<QuerySnapshot<Kanji>> _kanjis = FirebaseFirestore.instance
-      .collection('kanjis')
-      .withConverter<Kanji>(fromFirestore: Kanji.fromFirestore,
-          toFirestore: (kanji, _) => kanji.toFirestore())
-      .snapshots();
-  late final Stream<QuerySnapshot<Kanji>> _compartidos = FirebaseFirestore.instance
-      .collection('kanjiscomunitarios')
-      .withConverter<Kanji>(fromFirestore: Kanji.fromFirestore,
-          toFirestore: (kanji, _) => kanji.toFirestore())
-      .snapshots();
-  late final Stream<QuerySnapshot<Vocabulario>> _vocabulario = FirebaseFirestore.instance
-      .collection('vocabulario')
-      .withConverter<Vocabulario>(fromFirestore: Vocabulario.fromFirestore,
-          toFirestore: (palabra, _) => palabra.toFirestore())
-      .snapshots();
+  final Firebaseadmin _admin = Firebaseadmin();
+  late final Future<List<Kanji>> _kanjis = _admin.verKanjisParaBusqueda();
+  late final Future<List<Kanji>> _compartidos = _admin.verKanjisComunitarios();
+  late final Future<List<Vocabulario>> _vocabulario = _admin.verVocabularioParaBusqueda();
+
+  @override
+  void initState() {
+
+    super.initState();
+  }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +44,12 @@ class _BusquedaviewState extends State<Busquedaview> {
             onChanged: (valor) => setState(() => _busqueda = valor.trim().toLowerCase()),
           ),
         ),
-        Expanded(child: StreamBuilder<QuerySnapshot<Kanji>>(
-          stream: _kanjis,
-          builder: (context, kanjis) => StreamBuilder<QuerySnapshot<Kanji>>(
-            stream: _compartidos,
-            builder: (context, compartidos) => StreamBuilder<QuerySnapshot<Vocabulario>>(
-              stream: _vocabulario,
+        Expanded(child: FutureBuilder<List<Kanji>>(
+          future: _kanjis,
+          builder: (context, kanjis) => FutureBuilder<List<Kanji>>(
+            future: _compartidos,
+            builder: (context, compartidos) => FutureBuilder<List<Vocabulario>>(
+              future: _vocabulario,
               builder: (context, vocabulario) {
                 if (kanjis.hasError || compartidos.hasError || vocabulario.hasError) {
                   return const Center(child: Text('No se han podido cargar los resultados.'));
@@ -65,9 +61,9 @@ class _BusquedaviewState extends State<Busquedaview> {
                 // Unimos los resultados antes de ordenarlos: la fecha manda
                 // independientemente de la colección de la que procedan.
                 final resultados = <_Resultado>[
-                  ...kanjis.data!.docs.map((doc) => _Resultado.kanji(doc.data(), false)),
-                  ...compartidos.data!.docs.map((doc) => _Resultado.kanji(doc.data(), true)),
-                  ...vocabulario.data!.docs.map((doc) => _Resultado.vocabulario(doc.data())),
+                  ...kanjis.data!.map((kanji) => _Resultado.kanji(kanji, false)),
+                  ...compartidos.data!.map((kanji) => _Resultado.kanji(kanji, true)),
+                  ...vocabulario.data!.map((palabra) => _Resultado.vocabulario(palabra)),
                 ]..sort((a, b) => b.fecha.compareTo(a.fecha));
                 final filtrados = resultados.where((r) => r.textoBusqueda.contains(_busqueda)).toList();
                 if (filtrados.isEmpty) {

@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../DataHolder.dart';
-import '../objects/Perfil.dart';
+import '../admin/FirebaseAdmin.dart';
 
 class Onboardingview extends StatefulWidget {
   const Onboardingview({super.key});
@@ -14,7 +14,7 @@ class Onboardingview extends StatefulWidget {
 }
 
 class _Onboardingview extends State<Onboardingview> {
-  FirebaseFirestore db = FirebaseFirestore.instance;
+  final Firebaseadmin admin = Firebaseadmin();
   var fa = FirebaseAuth.instance;
   Dataholder dh = Dataholder.instance;
 
@@ -43,20 +43,9 @@ class _Onboardingview extends State<Onboardingview> {
     if (fa.currentUser == null) {
       Navigator.popAndPushNamed(context, "/LoginView");
     } else {
-      String uid = fa.currentUser!.uid;
-
-      final docRef = db
-          .collection("perfil")
-          .doc(uid)
-          .withConverter(
-            fromFirestore: Perfil.fromFirestore,
-            toFirestore: (Perfil perfil, _) => perfil.toFirestore(),
-          );
-
       try {
-        final docSnap = await docRef.get();
+        final perfil = await admin.descargarPerfil();
         if (!mounted) return;
-        final perfil = docSnap.data();
 
         if (perfil == null || perfil.nombre.trim().isEmpty || perfil.nivel.trim().isEmpty) {
           Navigator.popAndPushNamed(context, "/CrearPerfilView");
