@@ -11,8 +11,12 @@ class Perfilview extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return Scaffold(
-
-
+      body: Column(
+        children: [
+          Text("Nombre: " + dh.perfilUsuario.nombre),
+          Text("Nivel de japonés: " + dh.perfilUsuario.nivel)
+        ],
+      ),
       bottomNavigationBar: Botbarstyle(
         iBarIndex: dh.iBarIndex,
       ),

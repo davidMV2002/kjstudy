@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:kjstudy/views/BusquedaView.dart';
 import 'package:kjstudy/views/CrearKanjiView.dart';
+import 'package:kjstudy/views/CrearVocabularioView.dart';
 import 'package:kjstudy/views/KanjiDetailView.dart';
 import 'package:kjstudy/views/OnBoardingView.dart';
+import 'package:kjstudy/views/PerfilView.dart';
 import 'package:kjstudy/views/VocabularioDetailView.dart';
 import 'package:kjstudy/views/credenciales/CrearPerfilView.dart';
 import 'package:kjstudy/views/credenciales/LoginView.dart';
 import 'package:kjstudy/views/credenciales/RegisterView.dart';
 import 'package:kjstudy/views/listas/MisKanjisListView.dart';
+import 'package:kjstudy/views/listas/MiVocabularioListView.dart';
 
 import 'AppRoutes.dart';
 import 'views/HomeView.dart';
@@ -38,6 +41,9 @@ class MyApp extends StatelessWidget {
         AppRoutes.busqueda: (context) => Busquedaview(),
         AppRoutes.misKanjis: (context) => Miskanjislistview(),
         AppRoutes.crearKanji: (context) => Crearkanjiview(),
+        AppRoutes.perfilView: (context) => Perfilview(),
+        AppRoutes.crearVocabulario: (context) => Crearvocabularioview(),
+        AppRoutes.miVocabulario: (context) => const MiVocabularioListView(),
       },
       home: const Onboardingview(),
     );

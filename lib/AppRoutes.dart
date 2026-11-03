@@ -13,4 +13,7 @@ abstract final class AppRoutes {
   static const busqueda = '/BusquedaView';
   static const misKanjis = '/MisKanjisListView';
   static const crearKanji = '/CrearKanjiView';
+  static const perfilView = '/PerfilView';
+  static const crearVocabulario = '/CrearVocabularioView';
+  static const miVocabulario = '/MiVocabularioListView';
 }

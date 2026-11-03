@@ -50,6 +50,10 @@ class HomeView extends StatelessWidget {
                 Navigator.pushNamed(context, AppRoutes.misKanjis),
             child: const Text('Mis Kanjis'),
           ),
+          TextButton(
+            onPressed: () => Navigator.pushNamed(context, AppRoutes.miVocabulario),
+            child: const Text('Mi vocabulario'),
+          ),
           TextButton(onPressed: cerrarSesion, child: Text("Cerrar Sesion")),
         ],
       ),

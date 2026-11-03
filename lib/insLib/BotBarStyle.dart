@@ -21,9 +21,8 @@ class Botbarstyle extends StatelessWidget{
       }
 
       case 2:{
-        debugPrint("PROXIMAMENTE");
-        //Dataholder.instance.iBarIndex = index;
-        //Navigator.popAndPushNamed(context, "/XXX");
+        Dataholder.instance.iBarIndex = index;
+        Navigator.popAndPushNamed(context, AppRoutes.perfilView);
       }
     }
   }

@@ -40,6 +40,13 @@ class Firebaseadmin {
         toFirestore: (palabra, _) => palabra.toFirestore(),
       );
 
+  CollectionReference<Vocabulario> get miVocabulario => db
+      .collection('perfil/${fa.currentUser!.uid}/vocabulariopropio')
+      .withConverter<Vocabulario>(
+        fromFirestore: Vocabulario.fromFirestore,
+        toFirestore: (palabra, _) => palabra.toFirestore(),
+      );
+
 
 
   Future<Perfil?> descargarPerfil() async =>
@@ -83,6 +90,14 @@ class Firebaseadmin {
 
   Future<Vocabulario?> descargarVocabulario(String id) async =>
       (await vocabulario.doc(id).get()).data();
+
+  Future<void> crearVocabulario(Vocabulario palabra) async {
+    await miVocabulario.add(palabra);
+  }
+
+  Future<List<Vocabulario>> verMiVocabulario() async =>
+      (await miVocabulario.orderBy('fechamodificacion', descending: true).get())
+          .docs.map((doc) => doc.data()).toList();
 
   Future<List<Vocabulario>> verVocabulario() async => (await vocabulario
       .orderBy('fechamodificacion', descending: true)

@@ -16,7 +16,7 @@ class _VocabularioListViewState extends State<VocabularioListView> {
   late BuildContext miContext;
   Dataholder dh = Dataholder.instance;
 
-  late final Future<List<Vocabulario>> _vocabulario = Firebaseadmin().verVocabulario();
+  late Future<List<Vocabulario>> _vocabulario = Firebaseadmin().verVocabulario();
 
   @override
   Widget build(BuildContext context) {
