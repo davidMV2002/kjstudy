@@ -11,14 +11,23 @@ class Vocabulariodetailview extends StatelessWidget{
   Dataholder dh = Dataholder.instance;
 
   Future<void> funClickKanji(String kanjiId) async {
-    final kanji = await Firebaseadmin().descargarKanji(kanjiId);
-
-    if (kanji == null) {
-      return;
+    try {
+      final kanji = await Firebaseadmin().descargarKanjiParaVocabulario(kanjiId);
+      if (!miContext.mounted) return;
+      if (kanji == null) {
+        ScaffoldMessenger.of(miContext).showSnackBar(
+          const SnackBar(content: Text('Este kanji todavía no tiene tarjeta.')),
+        );
+        return;
+      }
+      dh.kanji = kanji;
+      Navigator.pushNamed(miContext, AppRoutes.kanjiDetail);
+    } catch (_) {
+      if (!miContext.mounted) return;
+      ScaffoldMessenger.of(miContext).showSnackBar(
+        const SnackBar(content: Text('No se ha podido cargar la tarjeta del kanji.')),
+      );
     }
-
-    dh.kanji = kanji;
-    Navigator.pushNamed(miContext, AppRoutes.kanjiDetail);
   }
 
   @override

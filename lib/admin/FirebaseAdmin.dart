@@ -57,6 +57,32 @@ class Firebaseadmin {
   Future<Kanji?> descargarKanji(String id) async =>
       (await kanjis.doc(id).get()).data();
 
+  // Los IDs del vocabulario también pueden referirse a tarjetas personales
+  // o comunitarias que se hayan creado después de guardar la palabra.
+  Future<Kanji?> descargarKanjiParaVocabulario(String id) async {
+    final general = await descargarKanji(id);
+    if (general != null) return general;
+    if (fa.currentUser == null) return null;
+    final propio = (await misKanjis.doc(id).get()).data();
+    if (propio != null) return propio;
+    return (await kanjisComunitarios.doc(id).get()).data();
+  }
+
+  Future<List<Kanji>> verKanjisParaVocabulario() async {
+    final listas = await Future.wait([
+      verKanjisParaBusqueda(),
+      verKanjisPropios(),
+      verKanjisComunitarios(),
+    ]);
+    final porId = <String, Kanji>{};
+    for (final lista in listas) {
+      for (final kanji in lista) {
+        if (kanji.id != null) porId.putIfAbsent(kanji.id!, () => kanji);
+      }
+    }
+    return porId.values.toList();
+  }
+
   Future<List<Kanji>> verKanjis() async => (await kanjis
       .orderBy('fechamodificacion', descending: true)
       .get())

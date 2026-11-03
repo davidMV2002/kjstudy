@@ -16,9 +16,10 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
   final _palabra = TextEditingController();
   final _lectura = TextEditingController();
   final _significado = TextEditingController();
+  final _kanjiManual = TextEditingController();
   final _admin = Firebaseadmin();
   final Set<String> _kanjiIds = {};
-  late Future<List<Kanji>> _kanjis = _admin.verKanjisParaBusqueda();
+  late Future<List<Kanji>> _kanjis = _admin.verKanjisParaVocabulario();
   bool _guardando = false;
 
   @override
@@ -26,6 +27,7 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
     _palabra.dispose();
     _lectura.dispose();
     _significado.dispose();
+    _kanjiManual.dispose();
     super.dispose();
   }
 
@@ -55,6 +57,18 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
   String? _obligatorio(String? valor) =>
       valor == null || valor.trim().isEmpty ? 'Este campo es obligatorio' : null;
 
+  void _agregarKanji() {
+    final caracter = _kanjiManual.text.trim();
+    if (caracter.runes.length != 1 || caracter == '/' || !_palabra.text.contains(caracter)) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Introduce un solo carácter que aparezca en la palabra.'),
+      ));
+      return;
+    }
+    setState(() => _kanjiIds.add(caracter));
+    _kanjiManual.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +82,7 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
               controller: _palabra,
               decoration: const InputDecoration(labelText: 'Palabra'),
               validator: _obligatorio,
-              onChanged: (_) => setState(() => _kanjiIds.clear()),
+              onChanged: (_) => setState(() {}),
             ),
             TextFormField(
               controller: _lectura,
@@ -83,13 +97,34 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
             const SizedBox(height: 24),
             Text('Kanjis que componen la palabra (opcional)',
                 style: Theme.of(context).textTheme.titleMedium),
-            const Text('Selecciona los kanjis que aparecen en la palabra.'),
+            const Text('Selecciona una tarjeta o añade un carácter aunque aún no tenga tarjeta.'),
+            Row(children: [
+              Expanded(child: TextField(
+                controller: _kanjiManual,
+                enabled: !_guardando,
+                decoration: const InputDecoration(labelText: 'Añadir kanji manualmente'),
+                onSubmitted: (_) => _agregarKanji(),
+              )),
+              IconButton(
+                onPressed: _guardando ? null : _agregarKanji,
+                tooltip: 'Añadir kanji',
+                icon: const Icon(Icons.add),
+              ),
+            ]),
+            if (_kanjiIds.isNotEmpty)
+              Wrap(
+                spacing: 8,
+                children: _kanjiIds.map((id) => InputChip(
+                  label: Text(id),
+                  onDeleted: _guardando ? null : () => setState(() => _kanjiIds.remove(id)),
+                )).toList(),
+              ),
             FutureBuilder<List<Kanji>>(
               future: _kanjis,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return TextButton(
-                    onPressed: () => setState(() => _kanjis = _admin.verKanjisParaBusqueda()),
+                    onPressed: () => setState(() => _kanjis = _admin.verKanjisParaVocabulario()),
                     child: const Text('No se han podido cargar los kanjis. Reintentar'),
                   );
                 }
@@ -104,7 +139,7 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
                 if (disponibles.isEmpty) {
                   return const Padding(
                     padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Text('No hay kanjis disponibles para esta palabra.'),
+                    child: Text('No hay tarjetas disponibles para esta palabra. Puedes añadir sus kanjis manualmente.'),
                   );
                 }
                 return Column(
