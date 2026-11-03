@@ -10,6 +10,7 @@ class Kanji {
   final String nivelJLPT;
   final String significado;
   final int? leccion;
+  final bool compartido;
   final DateTime fechaModificacion;
 
   const Kanji({
@@ -20,6 +21,7 @@ class Kanji {
     required this.nivelJLPT,
     required this.significado,
     this.leccion,
+    this.compartido = false,
     required this.fechaModificacion,
   });
 
@@ -37,6 +39,7 @@ class Kanji {
       nivelJLPT: data['nivelJLPT'] as String? ?? '',
       significado: data['significado'] as String? ?? '',
       leccion: (data['leccion'] as num?)?.toInt(),
+      compartido: data['compartido'] as bool? ?? false,
       fechaModificacion:
           (data['fechamodificacion'] as Timestamp?)?.toDate() ??
               DateTime.fromMillisecondsSinceEpoch(0),
@@ -51,6 +54,7 @@ class Kanji {
       'nivelJLPT': nivelJLPT,
       'significado': significado,
       'leccion': leccion,
+      'compartido': compartido,
       'fechamodificacion': Timestamp.fromDate(fechaModificacion),
     };
   }

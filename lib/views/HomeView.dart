@@ -47,7 +47,7 @@ class HomeView extends StatelessWidget {
           ),
           TextButton(
             onPressed: () =>
-                Navigator.pushNamed(context, AppRoutes.vocabulario),  // Cambiar la ruta
+                Navigator.pushNamed(context, AppRoutes.misKanjis),
             child: const Text('Mis Kanjis'),
           ),
           TextButton(onPressed: cerrarSesion, child: Text("Cerrar Sesion")),

@@ -11,4 +11,6 @@ abstract final class AppRoutes {
   static const onboarding = '/OnBoardinView';
   static const crearperfil = '/CrearPerfilView';
   static const busqueda = '/BusquedaView';
+  static const misKanjis = '/MisKanjisListView';
+  static const crearKanji = '/CrearKanjiView';
 }

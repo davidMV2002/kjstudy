@@ -25,6 +25,7 @@ class Firebaseadmin {
 
   CollectionReference<Kanji> get kanjis => _kanjis('kanjis');
   CollectionReference<Kanji> get kanjisComunitarios => _kanjis('kanjiscomunitarios');
+  CollectionReference<Kanji> get misKanjis => _kanjis('perfil/${fa.currentUser!.uid}/kanjispropios');
   CollectionReference<Kanji> _kanjis(String coleccion) => db
       .collection(coleccion)
       .withConverter<Kanji>(
@@ -63,6 +64,20 @@ class Firebaseadmin {
 
   Future<List<Kanji>> verKanjisComunitarios() async =>
       (await kanjisComunitarios.get()).docs.map((doc) => doc.data()).toList();
+
+  Future<List<Kanji>> verKanjisPropios() async =>
+      (await misKanjis.get()).docs.map((doc) => doc.data()).toList();
+
+  Future<void> crearKanjiPropio(Kanji kanji) async {
+    final referencia = misKanjis.doc(kanji.caracter);
+    await db.runTransaction((transaction) async {
+      if ((await transaction.get(referencia)).exists) {
+        throw StateError('Este kanji ya existe.');
+      }
+      transaction.set(referencia, kanji);
+    });
+  }
+
 
 
 

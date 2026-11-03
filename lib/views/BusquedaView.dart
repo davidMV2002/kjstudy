@@ -103,11 +103,11 @@ class _BusquedaviewState extends State<Busquedaview> {
 
 // Adaptador común para poder ordenar y mostrar modelos diferentes juntos.
 class _Resultado {
-  final Kanji? kanji;
+  late final Kanji? kanji;
   final Vocabulario? palabra;
   final String tipo;
   _Resultado.kanji(Kanji valor, bool compartido)
-      : kanji = valor, palabra = null, tipo = compartido ? 'Kanji compartido' : 'Kanji';
+      : kanji = valor, palabra = null, tipo = compartido ? 'Kanji compartido' : 'Kanji de la lección: ${valor!.leccion}';
   _Resultado.vocabulario(Vocabulario valor)
       : kanji = null, palabra = valor, tipo = 'Vocabulario';
   DateTime get fecha => kanji?.fechaModificacion ?? palabra!.fechaModificacion;
