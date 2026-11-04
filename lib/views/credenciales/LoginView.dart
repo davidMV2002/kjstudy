@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import '../../AppRoutes.dart';
 
-class Loginview extends StatelessWidget{
+import '../../AppRoutes.dart';
+import 'AuthLayout.dart';
+
+class Loginview extends StatelessWidget {
   var faInstance = FirebaseAuth.instance;
   FirebaseFirestore db = FirebaseFirestore.instance;
   late BuildContext miContext;
@@ -85,43 +87,57 @@ class Loginview extends StatelessWidget{
     Navigator.popAndPushNamed(miContext, "/RegisterView");
   }
 
-
   @override
   Widget build(BuildContext context) {
     miContext = context;
 
-    return Scaffold(
-      appBar: new AppBar(title: new Text("KJSTUDY")),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "LOGIN",
-            style: TextStyle(fontSize: 30, backgroundColor: Colors.red),
+    return AuthLayout(
+      eyebrow: 'Tu espacio de estudio',
+      title: 'Te damos la bienvenida',
+      description: 'Continúa aprendiendo japonés a tu ritmo.',
+      children: [
+        TextField(
+          controller: userController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(
+            labelText: 'Correo electrónico',
+            prefixIcon: Icon(Icons.mail_outline),
           ),
-          TextField(
-            controller: userController,
-            decoration: InputDecoration(hintText: "Usuario"),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          obscureText: true,
+          controller: passwordController,
+          decoration: const InputDecoration(
+            labelText: 'Contraseña',
+            prefixIcon: Icon(Icons.lock_outline),
           ),
-          TextField(
-            obscureText: true,
-            controller: passwordController,
-            decoration: InputDecoration(hintText: "Contraseña"),
+        ),
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: funClickLogin,
+            child: const Text('Iniciar sesión'),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(onPressed: funClickLogin, child: Text("Login")),
-              TextButton(onPressed: funClickRegistro, child: Text("Registrarse"),
-              ),
-            ],
-          ),
-          TextButton(
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
             onPressed: funClickGoogle,
-            child: const Text('Continuar con Google'),
+            icon: const Icon(Icons.account_circle_outlined),
+            label: const Text('Continuar con Google'),
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 24),
+        Center(
+          child: TextButton(
+            onPressed: funClickRegistro,
+            child: const Text('¿No tienes cuenta? Regístrate'),
+          ),
+        ),
+      ],
     );
   }
 }

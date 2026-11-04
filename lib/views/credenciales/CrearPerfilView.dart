@@ -1,4 +1,5 @@
 import '../../admin/FirebaseAdmin.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../DataHolder.dart';
 import '../../AppRoutes.dart';
 import '../../objects/Perfil.dart';
+import 'AuthLayout.dart';
 
 class Crearperfilview extends StatelessWidget {
   late BuildContext miContext;
@@ -25,14 +27,12 @@ class Crearperfilview extends StatelessWidget {
       return;
     }
 
-
     final perfiles = admin.perfiles;
     final perfil = new Perfil(
       uid: FirebaseAuth.instance.currentUser!.uid,
       nombre: nombre,
       nivel: nivel,
     );
-
 
     try {
       await perfiles.doc(perfil.uid).set(perfil);
@@ -57,29 +57,40 @@ class Crearperfilview extends StatelessWidget {
   Widget build(BuildContext context) {
     miContext = context;
 
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: .center,
-          children: [
-            TextField(
-              controller: nombreController,
-              decoration: InputDecoration(hintText: "Nombre"),
-            ),
-            TextField(
-              controller: nivelController,
-              decoration: InputDecoration(hintText: "Nivel del japonés"),
-            ),
-            Row(
-              mainAxisAlignment: .center,
-              children: [
-                TextButton(onPressed: funConfirmar, child: Text("Confirmar")),
-                TextButton(onPressed: funSalir, child: Text("Salir")),
-              ],
-            ),
-          ],
+    return AuthLayout(
+      eyebrow: 'Un último paso',
+      title: 'Tu perfil de estudio',
+      description: 'Cuéntanos un poco sobre ti para comenzar.',
+      children: [
+        TextField(
+          controller: nombreController,
+          decoration: const InputDecoration(
+            labelText: 'Nombre',
+            prefixIcon: Icon(Icons.person_outline),
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: nivelController,
+          decoration: const InputDecoration(
+            labelText: 'Nivel de japonés',
+            hintText: 'Por ejemplo, principiante o N5',
+            prefixIcon: Icon(Icons.school_outlined),
+          ),
+        ),
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: funConfirmar,
+            child: const Text('Guardar perfil'),
+          ),
+        ),
+        const SizedBox(height: 12),
+        Center(
+          child: TextButton(onPressed: funSalir, child: const Text('Salir')),
+        ),
+      ],
     );
   }
 }

@@ -16,7 +16,8 @@ class _VocabularioListViewState extends State<VocabularioListView> {
   late BuildContext miContext;
   Dataholder dh = Dataholder.instance;
 
-  late Future<List<Vocabulario>> _vocabulario = Firebaseadmin().verVocabulario();
+  late Future<List<Vocabulario>> _vocabulario = Firebaseadmin()
+      .verVocabulario();
 
   @override
   Widget build(BuildContext context) {
@@ -51,29 +52,39 @@ class _VocabularioListViewState extends State<VocabularioListView> {
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
+                clipBehavior: Clip.antiAlias,
                 child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                   title: Text(
                     palabra.palabra,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
+                      color: Color(0xFF8C3030),
                     ),
                   ),
                   subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(palabra.lectura),
-                        const SizedBox(height: 2),
+                        Text(
+                          palabra.lectura,
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        const SizedBox(height: 4),
                         Text(palabra.significado),
                       ],
                     ),
                   ),
+                  trailing: const Icon(Icons.chevron_right),
                   // Aquí añadiremos la navegación a los detalles más adelante.
                   onTap: () {
-                    Navigator.pushNamed(miContext, "/VocabularioDetailView",);
+                    Navigator.pushNamed(miContext, "/VocabularioDetailView");
                     Dataholder.instance.vocabulario = palabra;
                     print("PULSADO");
                   },
@@ -83,9 +94,7 @@ class _VocabularioListViewState extends State<VocabularioListView> {
           );
         },
       ),
-      bottomNavigationBar: Botbarstyle(
-        iBarIndex: dh.iBarIndex,
-      ),
+      bottomNavigationBar: Botbarstyle(iBarIndex: dh.iBarIndex),
     );
   }
 }

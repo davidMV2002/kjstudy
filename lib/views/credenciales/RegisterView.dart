@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class Registerview extends StatelessWidget{
+import 'AuthLayout.dart';
+
+class Registerview extends StatelessWidget {
   var faInstance = FirebaseAuth.instance;
   late BuildContext miContext;
   TextEditingController userController = new TextEditingController();
@@ -42,36 +44,53 @@ class Registerview extends StatelessWidget{
   Widget build(BuildContext context) {
     miContext = context;
 
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            "REGISTRO",
-            style: TextStyle(fontSize: 30, backgroundColor: Colors.red),
+    return AuthLayout(
+      eyebrow: 'Empieza a aprender',
+      title: 'Crea tu cuenta',
+      description: 'Guarda tus avances y construye tu propio vocabulario.',
+      children: [
+        TextField(
+          controller: userController,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(
+            labelText: 'Correo electrónico',
+            prefixIcon: Icon(Icons.mail_outline),
           ),
-          TextField(
-            controller: userController,
-            decoration: InputDecoration(hintText: "Usuario"),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          obscureText: true,
+          controller: passwordController,
+          decoration: const InputDecoration(
+            labelText: 'Contraseña',
+            prefixIcon: Icon(Icons.lock_outline),
           ),
-          TextField(
-            obscureText: true,
-            controller: passwordController,
-            decoration: InputDecoration(hintText: "Contraseña"),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          obscureText: true,
+          controller: repasswordController,
+          decoration: const InputDecoration(
+            labelText: 'Repite la contraseña',
+            prefixIcon: Icon(Icons.lock_outline),
           ),
-          TextField(
-            obscureText: true,
-            controller: repasswordController,
-            decoration: InputDecoration(hintText: "Repite la Contraseña"),
+        ),
+        const SizedBox(height: 24),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: funClickAceptar,
+            child: const Text('Crear cuenta'),
           ),
-          Row(
-            children: [
-              TextButton(onPressed: funClickAceptar, child: Text("Aceptar")),
-              TextButton(onPressed: funClickCancelar, child: Text("Cancelar")),
-            ],
+        ),
+        const SizedBox(height: 12),
+        Center(
+          child: TextButton(
+            onPressed: funClickCancelar,
+            child: const Text('Volver a iniciar sesión'),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

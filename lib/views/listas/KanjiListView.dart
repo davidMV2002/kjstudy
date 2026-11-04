@@ -26,11 +26,7 @@ class _KanjiListViewState extends State<KanjiListView> {
     miContext = context;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Lección $_leccion',
-        ),
-      ),
+      appBar: AppBar(title: Text('Lección $_leccion')),
       body: FutureBuilder<List<Kanji>>(
         future: _kanjis,
         builder: (context, snapshot) {
@@ -55,8 +51,14 @@ class _KanjiListViewState extends State<KanjiListView> {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Text('${kanjis.length} kanjis'),
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 4),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    '${kanjis.length} kanjis',
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                ),
               ),
               Expanded(
                 child: GridView.builder(
@@ -73,6 +75,7 @@ class _KanjiListViewState extends State<KanjiListView> {
                     final kanji = kanjis[index];
 
                     return Card(
+                      margin: EdgeInsets.zero,
                       clipBehavior: Clip.antiAlias,
                       child: InkWell(
                         // Navegar a los detalles del Kanji
@@ -81,7 +84,7 @@ class _KanjiListViewState extends State<KanjiListView> {
                           Navigator.pushNamed(miContext, AppRoutes.kanjiDetail);
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(4),
+                          padding: const EdgeInsets.all(8),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -90,14 +93,16 @@ class _KanjiListViewState extends State<KanjiListView> {
                                 style: const TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.bold,
+                                  color: Color(0xFF8C3030),
                                 ),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: 8),
                               Text(
                                 kanji.significado,
-                                maxLines: 1,
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ],
                           ),
@@ -111,9 +116,7 @@ class _KanjiListViewState extends State<KanjiListView> {
           );
         },
       ),
-      bottomNavigationBar: Botbarstyle(
-        iBarIndex: dh.iBarIndex,
-      ),
+      bottomNavigationBar: Botbarstyle(iBarIndex: dh.iBarIndex),
     );
   }
 }

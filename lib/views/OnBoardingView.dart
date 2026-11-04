@@ -47,7 +47,9 @@ class _Onboardingview extends State<Onboardingview> {
         final perfil = await admin.descargarPerfil();
         if (!mounted) return;
 
-        if (perfil == null || perfil.nombre.trim().isEmpty || perfil.nivel.trim().isEmpty) {
+        if (perfil == null ||
+            perfil.nombre.trim().isEmpty ||
+            perfil.nivel.trim().isEmpty) {
           Navigator.popAndPushNamed(context, "/CrearPerfilView");
         } else {
           dh.perfilUsuario = perfil;
@@ -86,10 +88,50 @@ class _Onboardingview extends State<Onboardingview> {
           child: Column(
             mainAxisAlignment: .center,
             children: [
-              //  Implementar logo de la app
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-                child: CircularProgressIndicator(value: _iProgress / 100),
+              Container(
+                width: 88,
+                height: 88,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                child: Text(
+                  '学',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 46,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'KJ STUDY',
+                style: Theme.of(context).textTheme.titleLarge
+                    ?.copyWith(letterSpacing: 2, fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Tu camino hacia el japonés',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: 160,
+                child: LinearProgressIndicator(
+                  value: _iProgress / 100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Preparando tu espacio…',
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
               ),
             ],
           ),

@@ -8,18 +8,16 @@ import '../../admin/FirebaseAdmin.dart';
 import '../../insLib/BotBarStyle.dart';
 import '../../objects/Kanji.dart';
 
-class Miskanjislistview extends StatefulWidget{
+class Miskanjislistview extends StatefulWidget {
   @override
   State<Miskanjislistview> createState() => _MiskanjisviewState();
 }
 
 class _MiskanjisviewState extends State<Miskanjislistview> {
-
   late BuildContext miContext;
   Dataholder dh = Dataholder.instance;
 
   late Future<List<Kanji>> _kanji = Firebaseadmin().verKanjisPropios();
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,30 +52,43 @@ class _MiskanjisviewState extends State<Miskanjislistview> {
 
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
+                clipBehavior: Clip.antiAlias,
                 child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                   title: Text(
                     palabra.caracter,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
+                      color: Color(0xFF8C3030),
                     ),
                   ),
                   subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(palabra.significado),
-                        Text(palabra.lecturasKun.join(', ')),
-                        Text(palabra.lecturasOn.join(', ')),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
+                        Text(
+                          palabra.lecturasKun.join(', '),
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        Text(
+                          palabra.lecturasOn.join(', '),
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
                       ],
                     ),
                   ),
+                  trailing: const Icon(Icons.chevron_right),
                   // Aquí añadiremos la navegación a los detalles más adelante.
                   onTap: () {
-                    Navigator.pushNamed(miContext, "/KanjiDetailView",);
+                    Navigator.pushNamed(miContext, "/KanjiDetailView");
                     Dataholder.instance.kanji = palabra;
                     print("PULSADO");
                   },
@@ -89,7 +100,10 @@ class _MiskanjisviewState extends State<Miskanjislistview> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final creado = await Navigator.pushNamed(context, AppRoutes.crearKanji);
+          final creado = await Navigator.pushNamed(
+            context,
+            AppRoutes.crearKanji,
+          );
           if (creado == true && mounted) {
             setState(() => _kanji = Firebaseadmin().verKanjisPropios());
           }
@@ -97,9 +111,7 @@ class _MiskanjisviewState extends State<Miskanjislistview> {
         tooltip: 'Crear kanji',
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: Botbarstyle(
-        iBarIndex: dh.iBarIndex,
-      ),
+      bottomNavigationBar: Botbarstyle(iBarIndex: dh.iBarIndex),
     );
   }
 }

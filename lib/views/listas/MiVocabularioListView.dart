@@ -25,14 +25,18 @@ class _MiVocabularioListViewState extends State<MiVocabularioListView> {
         future: _vocabulario,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return const Center(child: Text('No se ha podido cargar tu vocabulario.'));
+            return const Center(
+              child: Text('No se ha podido cargar tu vocabulario.'),
+            );
           }
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
           final palabras = snapshot.data!;
           if (palabras.isEmpty) {
-            return const Center(child: Text('Todavía no tienes vocabulario propio.'));
+            return const Center(
+              child: Text('Todavía no tienes vocabulario propio.'),
+            );
           }
           return ListView.builder(
             padding: const EdgeInsets.all(16),
@@ -41,17 +45,36 @@ class _MiVocabularioListViewState extends State<MiVocabularioListView> {
               final palabra = palabras[index];
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
+                clipBehavior: Clip.antiAlias,
                 child: ListTile(
-                  title: Text(palabra.palabra,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  title: Text(
+                    palabra.palabra,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF8C3030),
+                    ),
+                  ),
                   subtitle: Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.only(top: 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
-                      children: [Text(palabra.lectura), const SizedBox(height: 2), Text(palabra.significado)],
+                      children: [
+                        Text(
+                          palabra.lectura,
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(palabra.significado),
+                      ],
                     ),
                   ),
+                  trailing: const Icon(Icons.chevron_right),
                   onTap: () {
                     Dataholder.instance.vocabulario = palabra;
                     Navigator.pushNamed(context, AppRoutes.vocabularioDetail);
@@ -64,7 +87,10 @@ class _MiVocabularioListViewState extends State<MiVocabularioListView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final creado = await Navigator.pushNamed(context, AppRoutes.crearVocabulario);
+          final creado = await Navigator.pushNamed(
+            context,
+            AppRoutes.crearVocabulario,
+          );
           if (creado == true && mounted) {
             setState(() => _vocabulario = _admin.verMiVocabulario());
           }
@@ -72,7 +98,9 @@ class _MiVocabularioListViewState extends State<MiVocabularioListView> {
         tooltip: 'Crear vocabulario',
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: Botbarstyle(iBarIndex: Dataholder.instance.iBarIndex),
+      bottomNavigationBar: Botbarstyle(
+        iBarIndex: Dataholder.instance.iBarIndex,
+      ),
     );
   }
 }
