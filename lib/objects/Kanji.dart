@@ -11,6 +11,7 @@ class Kanji {
   final String significado;
   final int? leccion;
   final bool compartido;
+  final String? creador;
   final DateTime fechaModificacion;
 
   const Kanji({
@@ -22,6 +23,7 @@ class Kanji {
     required this.significado,
     this.leccion,
     this.compartido = false,
+    this.creador,
     required this.fechaModificacion,
   });
 
@@ -40,6 +42,7 @@ class Kanji {
       significado: data['significado'] as String? ?? '',
       leccion: (data['leccion'] as num?)?.toInt(),
       compartido: data['compartido'] as bool? ?? false,
+      creador: data['creador'] as String?,
       fechaModificacion:
           (data['fechamodificacion'] as Timestamp?)?.toDate() ??
               DateTime.fromMillisecondsSinceEpoch(0),
@@ -55,6 +58,7 @@ class Kanji {
       'significado': significado,
       'leccion': leccion,
       'compartido': compartido,
+      if (creador != null) 'creador': creador,
       'fechamodificacion': Timestamp.fromDate(fechaModificacion),
     };
   }

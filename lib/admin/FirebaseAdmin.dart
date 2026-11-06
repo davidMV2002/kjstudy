@@ -52,6 +52,9 @@ class Firebaseadmin {
   Future<Perfil?> descargarPerfil() async =>
       (await perfiles.doc(fa.currentUser!.uid).get()).data();
 
+  Future<Perfil?> descargarPerfilPorUid(String uid) async =>
+      (await perfiles.doc(uid).get()).data();
+
 
 
   Future<Kanji?> descargarKanji(String id) async =>
