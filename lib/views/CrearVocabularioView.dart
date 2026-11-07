@@ -201,9 +201,9 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return TextButton(
-                    onPressed: () => setState(
-                      () => _kanjis = _admin.verKanjisParaVocabulario(),
-                    ),
+                    onPressed: () => setState(() {
+                      _kanjis = _admin.verKanjisParaVocabulario();
+                    }),
                     child: const Text(
                       'No se han podido cargar los kanjis. Reintentar',
                     ),
@@ -235,7 +235,7 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
                   children: disponibles
                       .map(
                         (kanji) => CheckboxListTile(
-                          value: _kanjiIds.contains(kanji.id),
+                          value: _kanjiIds.contains(kanji.caracter),
                           title: Text(
                             '${kanji.caracter} — ${kanji.significado}',
                           ),
@@ -244,9 +244,9 @@ class _CrearvocabularioviewState extends State<Crearvocabularioview> {
                               : (seleccionado) {
                                   setState(() {
                                     if (seleccionado == true) {
-                                      _kanjiIds.add(kanji.id!);
+                                      _kanjiIds.add(kanji.caracter);
                                     } else {
-                                      _kanjiIds.remove(kanji.id);
+                                      _kanjiIds.remove(kanji.caracter);
                                     }
                                   });
                                 },

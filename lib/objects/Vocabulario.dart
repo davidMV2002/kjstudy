@@ -7,6 +7,8 @@ class Vocabulario {
   final String lectura;
   final String palabra;
   final String significado;
+  final bool compartido;
+  final String? creador;
   final DateTime fechaModificacion;
 
   const Vocabulario({
@@ -15,6 +17,8 @@ class Vocabulario {
     required this.lectura,
     required this.palabra,
     required this.significado,
+    this.compartido = false,
+    this.creador,
     required this.fechaModificacion,
   });
 
@@ -30,9 +34,11 @@ class Vocabulario {
       lectura: data['lectura'] as String? ?? '',
       palabra: data['palabra'] as String? ?? '',
       significado: data['significado'] as String? ?? '',
+      compartido: data['compartido'] as bool? ?? false,
+      creador: data['creador'] as String?,
       fechaModificacion:
           (data['fechamodificacion'] as Timestamp?)?.toDate() ??
-              DateTime.fromMillisecondsSinceEpoch(0),
+          DateTime.fromMillisecondsSinceEpoch(0),
     );
   }
 
@@ -42,6 +48,8 @@ class Vocabulario {
       'lectura': lectura,
       'palabra': palabra,
       'significado': significado,
+      'compartido': compartido,
+      if (creador != null) 'creador': creador,
       'fechamodificacion': Timestamp.fromDate(fechaModificacion),
     };
   }

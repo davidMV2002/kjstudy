@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kjstudy/DataHolder.dart';
 import 'package:kjstudy/AppRoutes.dart';
@@ -18,6 +17,42 @@ class _MiskanjisviewState extends State<Miskanjislistview> {
   Dataholder dh = Dataholder.instance;
 
   late Future<List<Kanji>> _kanji = Firebaseadmin().verKanjisPropios();
+  bool _cambiando = false;
+
+  Future<void> _compartir(Kanji kanji) async {
+    if (kanji.id == null || _cambiando) return;
+    setState(() => _cambiando = true);
+    try {
+      final admin = Firebaseadmin();
+      await admin.compartirKanji(kanji.id!, !kanji.compartido);
+      if (!mounted) return;
+      setState(() { _kanji = admin.verKanjisPropios(); });
+      await _kanji;
+    } on FirebaseException catch (error, stack) {
+      debugPrint('Error al compartir kanji: $error\n$stack');
+      if (!mounted) return;
+      final mensaje = error.code == 'permission-denied'
+          ? 'Firestore ha denegado el acceso. Revisa las reglas publicadas.'
+          : error.code == 'unavailable'
+              ? 'No hay conexión con Firestore. Comprueba tu conexión.'
+              : 'No se ha podido actualizar el kanji (${error.code}).';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(mensaje)),
+      );
+    } catch (error, stack) {
+      debugPrint('Error al compartir kanji: $error\n$stack');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No se ha podido cambiar el estado del kanji. Inténtalo de nuevo.',
+          ),
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _cambiando = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,15 +117,22 @@ class _MiskanjisviewState extends State<Miskanjislistview> {
                           palabra.lecturasOn.join(', '),
                           style: Theme.of(context).textTheme.labelLarge,
                         ),
+                        Text(palabra.compartido ? 'Compartido' : 'Privado'),
                       ],
                     ),
                   ),
-                  trailing: const Icon(Icons.chevron_right),
-                  // Aquí añadiremos la navegación a los detalles más adelante.
+                  trailing: IconButton(
+                    tooltip: palabra.compartido
+                        ? 'Dejar de compartir'
+                        : 'Compartir',
+                    onPressed: _cambiando ? null : () => _compartir(palabra),
+                    icon: Icon(
+                      palabra.compartido ? Icons.public_off : Icons.share,
+                    ),
+                  ),
                   onTap: () {
-                    Navigator.pushNamed(miContext, "/KanjiDetailView");
                     Dataholder.instance.kanji = palabra;
-                    print("PULSADO");
+                    Navigator.pushNamed(miContext, AppRoutes.kanjiDetail);
                   },
                 ),
               );
@@ -105,7 +147,7 @@ class _MiskanjisviewState extends State<Miskanjislistview> {
             AppRoutes.crearKanji,
           );
           if (creado == true && mounted) {
-            setState(() => _kanji = Firebaseadmin().verKanjisPropios());
+            setState(() { _kanji = Firebaseadmin().verKanjisPropios(); });
           }
         },
         tooltip: 'Crear kanji',

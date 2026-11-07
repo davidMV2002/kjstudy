@@ -24,6 +24,8 @@ class _BusquedaviewState extends State<Busquedaview> {
   late final Future<List<Kanji>> _compartidos = _admin.verKanjisComunitarios();
   late final Future<List<Vocabulario>> _vocabulario = _admin
       .verVocabularioParaBusqueda();
+  late final Future<List<Vocabulario>> _vocabularioCompartido = _admin
+      .verVocabulariosComunitarios();
 
   Future<String?> _nombreCreador(String uid) =>
       _nombresCreadores.putIfAbsent(uid, () async {
@@ -80,76 +82,99 @@ class _BusquedaviewState extends State<Busquedaview> {
                 future: _compartidos,
                 builder: (context, compartidos) => FutureBuilder<List<Vocabulario>>(
                   future: _vocabulario,
-                  builder: (context, vocabulario) {
-                    if (kanjis.hasError ||
-                        compartidos.hasError ||
-                        vocabulario.hasError) {
-                      return const Center(
-                        child: Text('No se han podido cargar los resultados.'),
-                      );
-                    }
-                    if (!kanjis.hasData ||
-                        !compartidos.hasData ||
-                        !vocabulario.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                  builder: (context, vocabulario) => FutureBuilder<List<Vocabulario>>(
+                    future: _vocabularioCompartido,
+                    builder: (context, vocabularioCompartido) {
+                      if (kanjis.hasError ||
+                          compartidos.hasError ||
+                          vocabulario.hasError ||
+                          vocabularioCompartido.hasError) {
+                        return const Center(
+                          child: Text(
+                            'No se han podido cargar los resultados.',
+                          ),
+                        );
+                      }
+                      if (!kanjis.hasData ||
+                          !compartidos.hasData ||
+                          !vocabulario.hasData ||
+                          !vocabularioCompartido.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    // Unimos los resultados antes de ordenarlos: la fecha manda
-                    // independientemente de la colección de la que procedan.
-                    final resultados = <_Resultado>[
-                      ...kanjis.data!.map(
-                        (kanji) => _Resultado.kanji(kanji, false),
-                      ),
-                      ...compartidos.data!.map(
-                        (kanji) => _Resultado.kanji(kanji, true),
-                      ),
-                      ...vocabulario.data!.map(
-                        (palabra) => _Resultado.vocabulario(palabra),
-                      ),
-                    ]..sort((a, b) => b.fecha.compareTo(a.fecha));
-                    final filtrados = resultados
-                        .where((r) => r.textoBusqueda.contains(_busqueda))
-                        .toList();
-                    if (filtrados.isEmpty) {
-                      return const Center(child: Text('No hay resultados.'));
-                    }
-                    return ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                      itemCount: filtrados.length,
-                      itemBuilder: (context, index) {
-                        final resultado = filtrados[index];
-                        return Card(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          clipBehavior: Clip.antiAlias,
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
-                            title: Text(
-                              resultado.titulo,
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
+                      // Unimos los resultados antes de ordenarlos: la fecha manda
+                      // independientemente de la colección de la que procedan.
+                      final resultados = <_Resultado>[
+                        ...kanjis.data!.map(
+                          (kanji) => _Resultado.kanji(kanji, false),
+                        ),
+                        ...compartidos.data!.map(
+                          (kanji) => _Resultado.kanji(kanji, true),
+                        ),
+                        ...vocabulario.data!.map(
+                          (palabra) => _Resultado.vocabulario(palabra),
+                        ),
+                        ...vocabularioCompartido.data!.map(
+                          (palabra) =>
+                              _Resultado.vocabulario(palabra, compartido: true),
+                        ),
+                      ]..sort((a, b) => b.fecha.compareTo(a.fecha));
+                      final filtrados = resultados
+                          .where((r) => r.textoBusqueda.contains(_busqueda))
+                          .toList();
+                      if (filtrados.isEmpty) {
+                        return const Center(child: Text('No hay resultados.'));
+                      }
+                      return ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+                        itemCount: filtrados.length,
+                        itemBuilder: (context, index) {
+                          final resultado = filtrados[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            clipBehavior: Clip.antiAlias,
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
                               ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (resultado.compartido &&
-                                      resultado.kanji?.creador != null &&
-                                      resultado.kanji!.creador!.isNotEmpty)
-                                    FutureBuilder<String?>(
-                                      future: _nombreCreador(
-                                        resultado.kanji!.creador!,
-                                      ),
-                                      builder: (context, snapshot) => Text(
-                                        snapshot.data == null
-                                            ? resultado.tipo
-                                            : 'Kanji compartido por: ${snapshot.data}',
+                              title: Text(
+                                resultado.titulo,
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.only(top: 6),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (resultado.compartido &&
+                                        resultado.creador != null &&
+                                        resultado.creador!.isNotEmpty)
+                                      FutureBuilder<String?>(
+                                        future: _nombreCreador(
+                                          resultado.creador!,
+                                        ),
+                                        builder: (context, snapshot) => Text(
+                                          snapshot.data == null
+                                              ? resultado.tipo
+                                              : '${resultado.tipo} por: ${snapshot.data}',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelMedium
+                                              ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ),
+                                        ),
+                                      )
+                                    else
+                                      Text(
+                                        resultado.tipo,
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium
@@ -159,46 +184,34 @@ class _BusquedaviewState extends State<Busquedaview> {
                                                   .primary,
                                             ),
                                       ),
-                                    )
-                                  else
-                                    Text(
-                                      resultado.tipo,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelMedium
-                                          ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                    ),
-                                  const SizedBox(height: 4),
-                                  Text(resultado.detalle),
-                                ],
+                                    const SizedBox(height: 4),
+                                    Text(resultado.detalle),
+                                  ],
+                                ),
                               ),
+                              trailing: const Icon(Icons.chevron_right),
+                              onTap: () {
+                                // Reutilizamos las pantallas de detalle existentes.
+                                if (resultado.kanji != null) {
+                                  dh.kanji = resultado.kanji!;
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.kanjiDetail,
+                                  );
+                                } else {
+                                  dh.vocabulario = resultado.palabra!;
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.vocabularioDetail,
+                                  );
+                                }
+                              },
                             ),
-                            trailing: const Icon(Icons.chevron_right),
-                            onTap: () {
-                              // Reutilizamos las pantallas de detalle existentes.
-                              if (resultado.kanji != null) {
-                                dh.kanji = resultado.kanji!;
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.kanjiDetail,
-                                );
-                              } else {
-                                dh.vocabulario = resultado.palabra!;
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.vocabularioDetail,
-                                );
-                              }
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  },
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
             ),
@@ -223,11 +236,12 @@ class _Resultado {
       tipo = compartido
           ? 'Kanji compartido'
           : 'Kanji de la lección: ${valor.leccion}';
-  _Resultado.vocabulario(Vocabulario valor)
+  _Resultado.vocabulario(Vocabulario valor, {bool compartido = false})
     : kanji = null,
       palabra = valor,
-      compartido = false,
-      tipo = 'Vocabulario';
+      compartido = compartido,
+      tipo = compartido ? 'Vocabulario compartido' : 'Vocabulario';
+  String? get creador => kanji?.creador ?? palabra?.creador;
   DateTime get fecha => kanji?.fechaModificacion ?? palabra!.fechaModificacion;
   String get titulo => kanji?.caracter ?? palabra!.palabra;
   String get detalle => kanji != null
